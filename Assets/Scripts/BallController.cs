@@ -93,9 +93,9 @@ public class BallController : MonoBehaviour
         RightMovePanel.SetActive(true);
         effectTimeView.gameObject.SetActive(true);
         DisplayTargetColor();
-        StartCoroutine(timeEstimated());
+        StartCoroutine(TimeEstimated());
     }
-    private IEnumerator timeEstimated()
+    private IEnumerator TimeEstimated()
     {
         var delay = new WaitForSeconds(1f);
         for (timeForEffect = 30; timeForEffect > 0; timeForEffect--)
@@ -170,7 +170,7 @@ public class BallController : MonoBehaviour
             mainMeshRenderer.material.color = new Color(1f, 1f, 1f, 1f);
             mainCollider.isTrigger = false;
             SetTimeTextActive(true);
-            StartCoroutine(timeEstimated());
+            StartCoroutine(TimeEstimated());
         }
     }
     private void OnCollisionEnter(Collision collision)
