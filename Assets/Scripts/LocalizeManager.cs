@@ -1,11 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 public enum Language
 {
     English, Russian
 }
 public static class LocalizeManager
 {
+    private const int MainWordsIndex = 0;
+    private const int GameWordsIndex = 1;
+    private const char WordsSeparator = ',';
+    private const string RussianLocalizationDirectory = "Localization/Russian";
+    private const string RussianLocalizationFileName = "RussianStaticWords";
+    private const string EnglishLocalizationDirectory = "Localization/English";
+    private const string EnglishLocalizationFileName = "EnglishStaticWords";
+    private const string WordsTypeSeparator = "GAMEWORDS:";
     public const int NewRecord = 0;
     public const int Pause = 1;
     public const int Resume = 2;
@@ -41,11 +50,9 @@ public static class LocalizeManager
     public const int RequestClearData = 23;
     public delegate void ChangeLanguageDelegate();
     private static List<ChangeLanguageDelegate> OnChangeLanguages;
-    private readonly static string[] englishStaticWords = { "Max time: ", "Max score: ", "Buy for ", "Play", "Skins", "Money", "Do you really wanna buy this?", "Yes"
-            , "No", "Equip", "Remove", "Settings", "Language: ", "RU", "EN","Do you really wanna quit?", "Do you really wanna restart?","Time: ", "Score: ", "Shop", "loading...", "Display FPS", "Clear game data", "Do you really wanna clear game data?\nRestart the game after reset"};
-    private readonly static string[] russianStaticWords = { "Макс. время: ", "Макс. очки: ", "Купить за ", "Играть", "Скины", "Монеты", "Вы действительно хотите купить это?", "Да",
-        "Нет", "Надеть", "Снять", "Настройки","Язык игры: ", "РУС", "АНГ", "Вы действительно хотите выйти?", "Вы действительно хотите перезапустить игру?", "Время: ", "Очки: ", "Магазин", "загрузка..." ,"Отображать FPS", "Сбросить данные игры", "Вы действительно хотите сбросить данные игры?\nПерезапустите игру после сброса"};
-    private readonly static string[] russianGameStaticWords = { "Новый рекорд!", "Пауза", "Продолжить", "Поражение", "Выход", "Рестарт", "Для прохода любого кубика насквозь нажмите здесь!" };
+    private static string[] englishStaticWords;
+    private static string[] russianStaticWords;
+    private static string[] russianGameStaticWords;
     private const string languageKey = "LANGUAGE_KEY";
     private static Language language;
     public static Language CurrentLanguage
@@ -69,6 +76,11 @@ public static class LocalizeManager
     {
         language = (Language)PlayerPrefs.GetInt(languageKey, Application.systemLanguage == SystemLanguage.Russian ? 1 : 0);
         OnChangeLanguages = new List<ChangeLanguageDelegate>();
+        var typeSeparator = new string[] { WordsTypeSeparator };
+        var russianWords = Resources.Load<TextAsset>($"{RussianLocalizationDirectory}/{RussianLocalizationFileName}").text.Split(typeSeparator, StringSplitOptions.None);
+        russianStaticWords = russianWords[MainWordsIndex].GetStringWithoutNewLines().Split(WordsSeparator);
+        russianGameStaticWords = russianWords[GameWordsIndex].GetStringWithoutNewLines().Split(WordsSeparator);
+        englishStaticWords = Resources.Load<TextAsset>($"{EnglishLocalizationDirectory}/{EnglishLocalizationFileName}").text.GetStringWithoutNewLines().Split(WordsSeparator);
     }
     public static void ClearChangeListeners()
     {
