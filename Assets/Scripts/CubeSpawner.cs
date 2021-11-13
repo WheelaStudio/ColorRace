@@ -5,6 +5,7 @@ public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject cube;
     private int spawnCount = 0;
+    public const int MaxCubeCount = 4;
     private ValueManager valueManager;
     private int cubesCount = 2;
     public static CubeSpawner Singleton { get; private set; }

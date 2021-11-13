@@ -62,7 +62,7 @@ public class ValueManager : MonoBehaviour
     }
     public int GetCubeCount(bool increase)
     {
-        if (cubeCount != 4 && increase)
+        if (cubeCount != CubeSpawner.MaxCubeCount && increase)
         {
             cubeCount++;
             CubeCountChanged?.Invoke();

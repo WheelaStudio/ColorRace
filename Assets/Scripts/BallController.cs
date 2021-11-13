@@ -13,6 +13,7 @@ public class BallController : MonoBehaviour
     private Material LeftWall, RightWall;
     [SerializeField] private AudioSource DestroyCubeSound;
     [SerializeField] private MeshRenderer LeftWallRdr, RightWallRdr;
+    [SerializeField] private ParticleSystem SnowSystem;
     private MeshRenderer mainMeshRenderer;
     private Rigidbody body;
     private Transform currentTransform;
@@ -21,6 +22,7 @@ public class BallController : MonoBehaviour
     private int posIndex = 0;
     private bool isMoving = false;
     private Game game;
+    private bool snowSystemEnabled = false;
     private Dictionary<int, float[]> raceXPos = new Dictionary<int, float[]>()
     {
         [2] = new float[] { 0.5f, -0.5f },
@@ -85,6 +87,11 @@ public class BallController : MonoBehaviour
                 Move(0f, false);
             }
             StartCoroutine(localMove());
+            if (valueManager.GetCubeCount(false) == CubeSpawner.MaxCubeCount)
+            {
+                snowSystemEnabled = true;
+                SnowSystem.Play();
+            }
         };
         var tutorialManager = TutorialManager.shared;
         if (!tutorialManager.TutorialCompleted)
@@ -145,6 +152,8 @@ public class BallController : MonoBehaviour
         var color = valueManager.TargetColor;
         LeftWall.color = color;
         RightWall.color = color;
+        if (snowSystemEnabled)
+            SnowSystem.startColor = color;
     }
     private void FixedUpdate()
     {
