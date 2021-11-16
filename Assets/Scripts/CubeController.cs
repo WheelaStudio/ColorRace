@@ -7,34 +7,29 @@ public class CubeController : MonoBehaviour
     public float speed;
     [SerializeField] private GameObject particleSystemObj;
     [SerializeField] private ParticleSystem destroyEffect;
-    private ValueManager valueManager;
     private void Start()
     {
         direction = Vector3.forward * speed;
         body = GetComponent<Rigidbody>();
-        valueManager = ValueManager.Singleton;
     }
     private void FixedUpdate()
     {
         body.MovePosition(body.position + direction);
     }
-    private void OnDestroy()
+    public void DestroyCube(bool enableParticle)
     {
-        if (valueManager.LastDestroyCaller is BallController)
+        if (enableParticle)
         {
             particleSystemObj.transform.parent = null;
             destroyEffect.startColor = particleColor;
             particleSystemObj.SetActive(true);
             particleSystemObj.GetComponent<ParticleController>().Init();
         }
+        Destroy(gameObject);
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnBecameInvisible()
     {
-        if (collision.gameObject.CompareTag("Finish"))
-        {
-            valueManager.LastDestroyCaller = this;
-            Destroy(gameObject);
-        }
+            DestroyCube(false);    
     }
     public void SetColor(Color color, bool instanceParticleColor)
     {

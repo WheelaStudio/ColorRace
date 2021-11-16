@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 public class BallController : MonoBehaviour
 {
+    private readonly Color white = new Color(1f, 1f, 1f, 1f);
+    private readonly Color effectColor = new Color(1f, 1f, 1f, 0.25f);
+    private bool isInEffect = false;
     public static BallController Singleton { get; private set; }
     private Collider mainCollider;
     private int timeForEffect;
@@ -33,7 +36,7 @@ public class BallController : MonoBehaviour
     {
         get
         {
-            return mainMeshRenderer.material.color.a == 0.25f;
+            return isInEffect;
         }
     }
     public bool IsTimeTextActive
@@ -143,7 +146,8 @@ public class BallController : MonoBehaviour
         if (timeForEffect == 0 && game.State == GameState.Running)
         {
             SetTimeTextActive(false);
-            mainMeshRenderer.material.color = new Color(1f, 1f, 1f, 0.25f);
+            mainMeshRenderer.material.color = effectColor;
+            isInEffect = true;
             mainCollider.isTrigger = true;
         }
     }
@@ -176,7 +180,8 @@ public class BallController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Cube"))
         {
-            mainMeshRenderer.material.color = new Color(1f, 1f, 1f, 1f);
+            mainMeshRenderer.material.color = white;
+            isInEffect = false;
             mainCollider.isTrigger = false;
             SetTimeTextActive(true);
             StartCoroutine(TimeEstimated());
@@ -191,9 +196,8 @@ public class BallController : MonoBehaviour
             if (name.Contains("targetColor"))
             {
                 DestroyCubeSound.Play();
-                Destroy(gameObject);
+                gameObject.GetComponent<CubeController>().DestroyCube(true);
                 SpawnCubes();
-                valueManager.LastDestroyCaller = this;
                 game.IncreaseDestroyedCubesCount(true);
             }
             else
@@ -211,14 +215,9 @@ public class BallController : MonoBehaviour
             StartInvisibleAndTriigerEffect();
     }
 #endif
-    public void LeftMove()
+    public void StartMove(float XDirection)
     {
         if (game.State == GameState.Running && CanMove)
-            Move(-1f);
-    }
-    public void RightMove()
-    {
-        if (game.State == GameState.Running && CanMove)
-            Move(1f);
+            Move(Mathf.Clamp(XDirection, -1f, 1f));
     }
 }

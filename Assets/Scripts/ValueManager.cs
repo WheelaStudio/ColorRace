@@ -7,7 +7,6 @@ public class ValueManager : MonoBehaviour
     private float cubeSpeed = 0.15f;
     private Color targetColor;
     private List<Color> anotherColors;
-    private object lastDestroyCaller;
     private Random random;
     public delegate void cubeCountChanged();
     public event cubeCountChanged CubeCountChanged;
@@ -48,17 +47,6 @@ public class ValueManager : MonoBehaviour
         if(increase)
             cubeSpeed += 0.001f;
             return cubeSpeed;
-    }
-    public object LastDestroyCaller
-    {
-        get
-        {
-            return lastDestroyCaller;
-        }
-        set
-        {
-            lastDestroyCaller = value;
-        }
     }
     public int GetCubeCount(bool increase)
     {
