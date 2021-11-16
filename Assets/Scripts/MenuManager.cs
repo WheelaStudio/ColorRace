@@ -29,7 +29,7 @@ public class MenuManager : MonoBehaviour
         if(TutorialData.Shared is null)
         TutorialData.Load();
         tutorialData = TutorialData.Shared;
-        Application.targetFrameRate = Screen.currentResolution.refreshRate;
+        Application.targetFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? 60 : Screen.currentResolution.refreshRate;
         if (!tutorialData.GameTutorialCompleted)
             SceneManager.LoadScene(1);
     }

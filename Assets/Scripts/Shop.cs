@@ -57,7 +57,7 @@ public class Shop : MonoBehaviour
             var priceToBuy = price;
             if (price > money)
             {
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR && !UNITY_WEBGL
             Handheld.Vibrate();
 #endif
                 buyButtonAnimator.Play("NoMoney");

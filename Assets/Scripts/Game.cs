@@ -69,7 +69,7 @@ public class Game : MonoBehaviour
     public void GameOver()
     {
         Time.timeScale = 0f;
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR && !UNITY_WEBGL
         Handheld.Vibrate();
 #endif
         PauseButton.SetActive(false);
