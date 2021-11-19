@@ -1,13 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Random = System.Random;
 public class ValueManager : MonoBehaviour
 {
     private int cubeCount = 2;
     private float cubeSpeed = 0.15f;
     private Color targetColor;
     private List<Color> anotherColors;
-    private Random random;
+    private int stepHSV = 120;
     public delegate void cubeCountChanged();
     public event cubeCountChanged CubeCountChanged;
     public static ValueManager Singleton { get; private set; }
@@ -32,15 +31,17 @@ public class ValueManager : MonoBehaviour
     }
     public void InitColor()
     {
-        const double step = 20.0;
-        const byte maxRGB = 235;
+        var maxHSV = stepHSV;
         anotherColors = new List<Color>();
-        random = new Random();
-        for (int i = 0; i < cubeCount + 1; i++)
+        for (int i = 0; i <= cubeCount; i++)
         {
-            anotherColors.Add(new Color32(random.GetRandomBytesWithStep(0, maxRGB,step), random.GetRandomBytesWithStep(0, maxRGB, step), random.GetRandomBytesWithStep(0, maxRGB, step), 255));
+            var pastStep = maxHSV - stepHSV;
+            float randomHSVH() => Random.Range(pastStep, maxHSV) / 360f;
+            anotherColors.Add(Color.HSVToRGB(randomHSVH(), Random.Range(0.6f, 1f), Random.Range(0.6f,1f)));
+            maxHSV += stepHSV;
         }
-        var currentIndex = random.Next(0, anotherColors.Count);
+        anotherColors.Shuffle();
+        var currentIndex = Random.Range(0, anotherColors.Count);
         targetColor = anotherColors[currentIndex];
         anotherColors.RemoveAt(currentIndex);
     }
@@ -55,6 +56,7 @@ public class ValueManager : MonoBehaviour
         if (cubeCount != CubeSpawner.MaxCubeCount && increase)
         {
             cubeCount++;
+            stepHSV = 360/(cubeCount+1);
             CubeCountChanged?.Invoke();
         }
         return cubeCount;     

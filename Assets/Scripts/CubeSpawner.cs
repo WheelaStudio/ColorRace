@@ -4,7 +4,9 @@ using UnityEngine;
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject cube;
+    private int targetColorIndex = -1;
     private int spawnCount = 0;
+    private readonly List<int> targetsColorIndexes = new List<int> { 0, 1 };
     public const int MaxCubeCount = 4;
     private ValueManager valueManager;
     private int cubesCount = 2;
@@ -29,6 +31,10 @@ public class CubeSpawner : MonoBehaviour
     {
         valueManager = ValueManager.Singleton;
         var tutorialManager = TutorialManager.shared;
+        valueManager.CubeCountChanged += delegate
+        {
+            targetsColorIndexes.Add(cubesCount);
+        };
         if (!tutorialManager.TutorialCompleted)
             yield return new WaitUntil(() => tutorialManager.TutorialCompleted);
         UpdateColor(false);
@@ -42,12 +48,18 @@ public class CubeSpawner : MonoBehaviour
     }
     public void Spawn()
     {
-        var targetIndex = Random.Range(0, cubesCount);
+        var targets = new List<int>(targetsColorIndexes);
+        if (targetColorIndex != -1)
+        {
+            if (Random.Range(0, 10) != 1)
+                targets.Remove(targetColorIndex);
+        }
+        targetColorIndex = targets[Random.Range(0, targets.Count)];
         var anotherColors = valueManager.AnotherColors;
         var spawnPositions = spawnPositons[cubesCount];
         var scale = scales[cubesCount];
         var speed = valueManager.GetCubeSpeed(true);
-        var cube = Instantiate(this.cube, spawnPositions[targetIndex], Quaternion.identity);
+        var cube = Instantiate(this.cube, spawnPositions[targetColorIndex], Quaternion.identity);
         cube.name += " targetColor";
         cube.transform.localScale = scale;
         var cubeController = cube.GetComponent<CubeController>();
@@ -55,7 +67,7 @@ public class CubeSpawner : MonoBehaviour
         cubeController.SetColor(valueManager.TargetColor, true);
         for (int i = 0; i < anotherColors.Length; i++)
         {
-            if (i != targetIndex)
+            if (i != targetColorIndex)
             {
                 cube = Instantiate(this.cube, spawnPositions[i], Quaternion.identity);
                 cube.transform.localScale = scale;
