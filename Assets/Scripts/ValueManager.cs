@@ -32,11 +32,13 @@ public class ValueManager : MonoBehaviour
     }
     public void InitColor()
     {
+        const double step = 20.0;
+        const byte maxRGB = 235;
         anotherColors = new List<Color>();
         random = new Random();
         for (int i = 0; i < cubeCount + 1; i++)
         {
-            anotherColors.Add(new Color32((byte)random.Next(235), (byte)random.Next(235) , (byte)random.Next(235), 255));
+            anotherColors.Add(new Color32(random.GetRandomBytesWithStep(0, maxRGB,step), random.GetRandomBytesWithStep(0, maxRGB, step), random.GetRandomBytesWithStep(0, maxRGB, step), 255));
         }
         var currentIndex = random.Next(0, anotherColors.Count);
         targetColor = anotherColors[currentIndex];
