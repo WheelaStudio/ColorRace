@@ -1,46 +1,46 @@
 using UnityEngine;
 using UnityEngine.UI;
-public class Settings : MonoBehaviour
+public class Settings : MonoBehaviour // класс настроек
 {
-    [SerializeField] private QuestionDialog questionDialog;
-    [SerializeField] private GameObject[] Borders = new GameObject[2];
-    [SerializeField] private Toggle FPSToggle;
-    private MenuManager menuManager;
-    public bool RequestPanelIsActive
+    [SerializeField] private QuestionDialog questionDialog; // вопросительный диалог
+    [SerializeField] private GameObject[] Borders = new GameObject[2]; // окантовки кнопок переключения языка
+    [SerializeField] private Toggle FPSToggle; // тумблер для включения/выключения показа фпс
+    private MenuManager menuManager; // ссылка на MenuManager
+    public bool RequestPanelIsActive // открыт ли вопросительный диалог
     {
         get
         {
             return questionDialog.gameObject.activeSelf;
         }
     }
-    private void Start()
+    private void Start() // инициализация полей
     {
         menuManager = MenuManager.Shared;
         UpdateBorders((int)LocalizeManager.CurrentLanguage);
         FPSToggle.isOn = Preferences.FPSViewEnabled;
     }
-    public void ChangeLocalize(int value)
+    public void ChangeLocalize(int value) // смена языка
     {
         var language = value;
         LocalizeManager.ChangeLanguage((Language)language);
         menuManager.ChangeStatsLocalization();
         UpdateBorders(language);
     }
-    public void SetDisplayFPSFlag(bool value)
+    public void SetDisplayFPSFlag(bool value) // включение/выключение показа фпс
     {
         Preferences.FPSViewEnabled = value;
     }
-    private void UpdateBorders(int value)
+    private void UpdateBorders(int value) // обновление окантовок
     {
         var language = value;
         Borders[language].SetActive(true);
         Borders[language == 1 ? 0 : 1].SetActive(false);
     }
-    public void Hide()
+    public void Hide() // закрытие настроек 
     {
         gameObject.SetActive(false);
     }
-    public void RequestClearData()
+    public void RequestClearData() // запрос удаления всех настроек
     {
         Hide();
         questionDialog.Show(LocalizeManager.GetLocalizedString(LocalizeManager.RequestClearData, false), delegate

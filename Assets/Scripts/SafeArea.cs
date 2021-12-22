@@ -1,5 +1,5 @@
 using UnityEngine;
-public class SafeArea : MonoBehaviour
+public class SafeArea : MonoBehaviour // скрипт для адаптации интерфейса под вырез
 {
     private RectTransform Panel;
     private ScreenOrientation screenOrientation;

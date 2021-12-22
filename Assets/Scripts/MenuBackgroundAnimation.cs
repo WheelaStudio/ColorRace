@@ -1,21 +1,23 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-public class MenuBackgroundAnimation : MonoBehaviour
+public class MenuBackgroundAnimation : MonoBehaviour // изменение цвета на заднем фоне в меню
 {
-    private Camera change;
-    private float colorH = 0f;
+    private Camera change; // камера в меню
+    private float colorH = 0f; // hue - цветовой тон
+    // объекты, меняющие цвет в зависимости от фона
     [SerializeField] private Image buttonImage, buyButtonImage;
     [SerializeField] private Image[] moneyBuyImages = new Image[4];
     [SerializeField] private Image[] languageBorders = new Image[2];
+    // панель настроек
     [SerializeField] private GameObject SettingsPanel;
-    private void Start()
+    private void Start() // инициализация значений
     {
         change = GetComponent<Camera>();
         StartCoroutine(ColorChange());
     }
 
-    private IEnumerator ColorChange()
+    private IEnumerator ColorChange() // корутина, изменяющая фон и цвет объектов с небольшой задержкой 
     {
         void UpdateMoneyBuyImagesColor(Color color)
         {

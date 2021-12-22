@@ -1,20 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-public enum Language
+public enum Language // языки
 {
     English, Russian
 }
-public static class LocalizeManager
+public static class LocalizeManager // локализация игры
 {
-    private const int MainWordsIndex = 0;
-    private const int GameWordsIndex = 1;
-    private const char WordsSeparator = ',';
-    private const string RussianLocalizationDirectory = "Localization/Russian";
-    private const string RussianLocalizationFileName = "RussianStaticWords";
-    private const string EnglishLocalizationDirectory = "Localization/English";
-    private const string EnglishLocalizationFileName = "EnglishStaticWords";
-    private const string WordsTypeSeparator = "GAMEWORDS:";
+    private const int MainWordsIndex = 0; // слова меню
+    private const int GameWordsIndex = 1; // слова игры
+    private const char WordsSeparator = ','; // разделитель слов в файлах
+    private const string RussianLocalizationDirectory = "Localization/Russian"; // директория русской локализации
+    private const string RussianLocalizationFileName = "RussianStaticWords"; // имя русской локализации
+    private const string EnglishLocalizationDirectory = "Localization/English"; // директория английской локализации
+    private const string EnglishLocalizationFileName = "EnglishStaticWords"; // имя английской локализации
+    private const string WordsTypeSeparator = "GAMEWORDS:"; // разделитель слов на категории: меню и игра
+    // id'шники переводов
     public const int NewRecord = 0;
     public const int Pause = 1;
     public const int Resume = 2;
@@ -48,31 +49,26 @@ public static class LocalizeManager
     public const int FPSEnabled = 21;
     public const int ClearData = 22;
     public const int RequestClearData = 23;
-    public delegate void ChangeLanguageDelegate();
-    private static List<ChangeLanguageDelegate> OnChangeLanguages;
-    private static string[] englishStaticWords;
-    private static string[] russianStaticWords;
-    private static string[] russianGameStaticWords;
-    private const string languageKey = "LANGUAGE_KEY";
-    private static Language language;
-    public static Language CurrentLanguage
+    public delegate void ChangeLanguageDelegate(); // делегат, оповещающий о смене языка
+    private static List<ChangeLanguageDelegate> OnChangeLanguages; // список делегатов
+    private static string[] englishStaticWords; // список английских слов в меню
+    private static string[] russianStaticWords; // список русских слов в меню
+    private static string[] russianGameStaticWords; // список русских слов в игре
+    private const string languageKey = "LANGUAGE_KEY"; // ключ для доступа значения из сохранённых настроек
+    private static Language language; // текущий язык
+    public static Language CurrentLanguage // свойство, возвращающее текущий язык
     {
         get
         {
             return language;
         }
-        set
-        {
-            language = value;
-            SaveLanguage();
-        }
     }
-    private static void SaveLanguage()
+    private static void SaveLanguage() // сохранение языка в памяти устройства
     {
         PlayerPrefs.SetInt(languageKey, (int)language);
         PlayerPrefs.Save();
     }
-    public static void Init()
+    public static void Init() // инициализация слов, текущего языка
     {
         language = (Language)PlayerPrefs.GetInt(languageKey, Application.systemLanguage == SystemLanguage.Russian ? 1 : 0);
         OnChangeLanguages = new List<ChangeLanguageDelegate>();
@@ -82,30 +78,30 @@ public static class LocalizeManager
         russianGameStaticWords = russianWords[GameWordsIndex].GetStringWithoutNewLines().Split(WordsSeparator);
         englishStaticWords = Resources.Load<TextAsset>($"{EnglishLocalizationDirectory}/{EnglishLocalizationFileName}").text.GetStringWithoutNewLines().Split(WordsSeparator);
     }
-    public static void ClearChangeListeners()
+    public static void ClearChangeListeners() // очистка списка делегатов
     {
         OnChangeLanguages.Clear();
     }
-    public static bool IsChangeListenersListClear
+    public static bool IsChangeListenersListClear // пуст ли список делегатов
     {
         get
         {
             return OnChangeLanguages.Count == 0;
         }
     }
-    public static void AddChangeListener(ChangeLanguageDelegate changeLanguageDelegate)
+    public static void AddChangeListener(ChangeLanguageDelegate changeLanguageDelegate) // добавить делегат в список
     {
         OnChangeLanguages.Add(changeLanguageDelegate);
     }
-    public static bool RemoveChangeListener(ChangeLanguageDelegate changeLanguageDelegate)
+    public static bool RemoveChangeListener(ChangeLanguageDelegate changeLanguageDelegate) // удалить делегат из списка
     {
         return OnChangeLanguages.Remove(changeLanguageDelegate);
     }
-    public static string GetLocalizedString(int id, bool isGameWords)
+    public static string GetLocalizedString(int id, bool isGameWords) // получить доступ к локализованной строке
     {
         return language == Language.English ? (isGameWords ? "Tap here to go through any cube!" : englishStaticWords[id]) : (isGameWords ? (id > 6 ? russianStaticWords[id] : russianGameStaticWords[id]) : russianStaticWords[id]);
     }
-    public static void ChangeLanguage(Language value)
+    public static void ChangeLanguage(Language value) // изменение языка
     {
         language = value;
         SaveLanguage();

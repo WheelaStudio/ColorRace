@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections;
-public class TutorialManager : MonoBehaviour
+public class TutorialManager : MonoBehaviour // менеджер для показа туториала об игре 
 {
-    [SerializeField] private GameObject gameTutorial, controlTutorial, tutorialCanvas;
-    public static TutorialManager shared;
-    private TutorialData tutorailData;
-    public bool TutorialCompleted { get; private set; }
-    private void Awake()
+    [SerializeField] private GameObject gameTutorial, controlTutorial, tutorialCanvas; // описание игры, описане управления игры, канвас с туториалом
+    public static TutorialManager shared; // глобальная ссылка на проект
+    private TutorialData tutorailData; // информация о туториале
+    public bool TutorialCompleted { get; private set; } // закончен ли туториал
+    private void Awake() // инициализация значений
     {
         shared = this;
         tutorailData = TutorialData.Shared;
@@ -17,11 +17,11 @@ public class TutorialManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void Start()
+    private void Start() // старт отображения
     {
         StartCoroutine(DisplayTutorial());
     }
-    private IEnumerator DisplayTutorial()
+    private IEnumerator DisplayTutorial() // отображение
     {
         gameTutorial.SetActive(true);
         yield return new WaitForSeconds(2f);
@@ -34,7 +34,7 @@ public class TutorialManager : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void Update()
+    private void Update() // удержание игры пальцем
     {
         if (Input.touchCount > 0 && Time.timeScale == 1f)
         {

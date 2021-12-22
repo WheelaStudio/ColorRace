@@ -3,26 +3,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-public class MenuManager : MonoBehaviour
+public class MenuManager : MonoBehaviour // меню игры
 {
-    private bool levelIsLoading = false;
-    private TutorialData tutorialData;
-    public static MenuManager Shared { get; private set; }
+    private bool levelIsLoading = false; // загружен ли уровень с игрой
+    private TutorialData tutorialData; // информация о туториале
+    public static MenuManager Shared { get; private set; } // глобальная ссылка на объект
     [SerializeField]
-    private GameObject SettingsPanel, shopAlert;
-    private GameObject skinViewHolder;
+    private GameObject SettingsPanel, shopAlert; // панель настроек, оповещение о возможности покупки скина
+    private GameObject skinViewHolder; // "держатель" скина
     [SerializeField]
-    private Animator canvasHandler, skinView;
+    private Animator canvasHandler, skinView; // аниматоры канваса, представления скина
     [SerializeField]
-    private TextMeshProUGUI maxScore, maxTime;
+    private TextMeshProUGUI maxScore, maxTime; // представления рекордов
     [SerializeField]
-    private GameObject loadingText;
+    private GameObject loadingText; // текст с загрузкой
     [SerializeField]
-    private Image VolumeSwitcher;
+    private Image VolumeSwitcher; // включение/выключение звука
     [SerializeField]
-    private Sprite SoundOn, SoundOff;
-    private Settings settings;
-    private void Awake()
+    private Sprite SoundOn, SoundOff; // спрайты "включенный/выключенный звук"
+    private Settings settings; // настройки
+    private void Awake() // иницализация полей, включение туториала
     {
         Shared = this;
         LocalizeManager.Init();
@@ -33,7 +33,7 @@ public class MenuManager : MonoBehaviour
         if (!tutorialData.GameTutorialCompleted)
             SceneManager.LoadScene(1);
     }
-    private void Start()
+    private void Start() // иницализация остальных полей
     {
         skinViewHolder = SkinViewController.SharedGameObject;
         settings = SettingsPanel.GetComponent<Settings>();
@@ -47,7 +47,7 @@ public class MenuManager : MonoBehaviour
             canvasHandler.Play("ShopAlert");
         }
     }
-    private void UpdateRecords()
+    private void UpdateRecords() // представление рекордов
     {
         maxScore.text = $"{LocalizeManager.GetLocalizedString(LocalizeManager.MaxScore, false)}{Preferences.ScoreRecord}";
         var time = Preferences.TimeRecord;
@@ -58,27 +58,27 @@ public class MenuManager : MonoBehaviour
         }
         maxTime.text = $"{LocalizeManager.GetLocalizedString(LocalizeManager.MaxTime, false)}{time / 60}:{Seconds()}";
     }
-    public void ChangeVolume()
+    public void ChangeVolume() // включить/выключить звук
     {
         var volume = AudioListener.volume == 0f ? 1f : 0f;
         AudioListener.volume = volume;
         VolumeSwitcher.sprite = volume == 1f ? SoundOn : SoundOff;
         Preferences.Volume = volume;
     }
-    private IEnumerator LaunchGame()
+    private IEnumerator LaunchGame() // запуск уровня с игрой
     {
         yield return null;
         SceneManager.LoadSceneAsync(1);
     }
 
-    public void Play()
+    public void Play() // старт запуска уровня с игрой
     {
         if (shopAlert.activeSelf || settings.RequestPanelIsActive || levelIsLoading) return;
         levelIsLoading = true;
         loadingText.SetActive(true);
         StartCoroutine(LaunchGame());
     }
-    public void OpenShop()
+    public void OpenShop() // открытие магазина, выключение подсказки
     {
         if (!SettingsPanel.activeSelf && !settings.RequestPanelIsActive && !levelIsLoading)
         {
@@ -94,11 +94,11 @@ public class MenuManager : MonoBehaviour
                 skinView.Play("OpenSkinView");
         }
     }
-    public void ChangeStatsLocalization()
+    public void ChangeStatsLocalization() // обновление представления рекордов со сменой локализации
     {
         UpdateRecords();
     }
-    public void OpenSettings()
+    public void OpenSettings() // открытие настроек игры
     {
         if (!shopAlert.activeSelf && !settings.RequestPanelIsActive && !levelIsLoading)
             SettingsPanel.SetActive(true);

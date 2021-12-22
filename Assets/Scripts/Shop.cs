@@ -1,29 +1,29 @@
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
-public class Shop : MonoBehaviour
+public class Shop : MonoBehaviour // внутриигровой магазин
 {
-    private GameObject skinViewHolder;
-    private Color whiteButton, grayButton;
-    [SerializeField] private RectTransform arrowTransform;
-    [SerializeField] private GameObject[] tabs = new GameObject[2];
-    [SerializeField] private Image[] tabButtons = new Image[2];
-    [SerializeField] private AudioSource purchaseSound;
-    [SerializeField] private GameObject acceptPanel;
-    [SerializeField] private Animator canvasHandler, skinViewAnimator, buyButtonAnimator;
-    [SerializeField] private TextMeshProUGUI skinName, buttonLabel, moneyView, secondMoneyView;
-    [SerializeField] private MeshRenderer meshRenderer;
-    private Material skinView;
+    private GameObject skinViewHolder; // держатель скинов
+    private Color whiteButton, grayButton; // цвета кнопок
+    [SerializeField] private RectTransform arrowTransform; // трансформ кнопок для переключения скинов
+    [SerializeField] private GameObject[] tabs = new GameObject[2]; // вкладки в магазине
+    [SerializeField] private Image[] tabButtons = new Image[2]; // изображения кнопок для переключения вкладок
+    [SerializeField] private AudioSource purchaseSound; // звук приобретения скина
+    [SerializeField] private GameObject acceptPanel; // окно подтверждения покупки
+    [SerializeField] private Animator canvasHandler, skinViewAnimator, buyButtonAnimator; // аниматоры канваса, представления скина, кнопки покупки
+    [SerializeField] private TextMeshProUGUI skinName, buttonLabel, moneyView, secondMoneyView; // текста  имени скина, кнопки покупки, монет на 1 и 2 вкладке
+    [SerializeField] private MeshRenderer meshRenderer; // рендер шарика, на котором изображён скин
+    private Material skinView; // материал скина
     [SerializeField]
-    private Button skinBuyButton, acceptButton;
+    private Button skinBuyButton, acceptButton; // кнопки покупки, подтверждения покупки
     [SerializeField]
-    private SkinData[] skinsData;
-    private Skin[] skins;
-    private int index = 0;
-    private int money = 0;
-    private bool[] isPurchased;
-    private int equipedIndex;
-    private void Awake()
+    private SkinData[] skinsData; // информация о скинах
+    private Skin[] skins; // скины
+    private int index = 0; // индекс текущего скина
+    private int money = 0; // кол-во монет
+    private bool[] isPurchased; // купленные скины
+    private int equipedIndex; // индекс одетого скина
+    private void Awake() // инициализация значений
     {
         whiteButton = Color.white;
         grayButton = new Color(0.9f, 0.9f, 0.9f);
@@ -36,11 +36,11 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < Preferences.SkinsCount; i++)
             skins[i] = new Skin(skinsData[i], isPurchased[i]);
     }
-    private void Start()
+    private void Start() // иницализация значений, выравнивание скина
     {
         skinViewHolder = SkinViewController.SharedGameObject;
         var pos = skinViewHolder.transform.position;
-        var arrowPos = arrowTransform.position;   
+        var arrowPos = arrowTransform.position;
         pos.y = Camera.main.ScreenToWorldPoint(new Vector3(arrowPos.x, arrowPos.y, 3f)).y;
         skinViewHolder.transform.position = pos;
         SetListener(skins[0]);
@@ -49,7 +49,7 @@ public class Shop : MonoBehaviour
             SetListener(skins[index]);
         });
     }
-    private void Buy(int price)
+    private void Buy(int price) // покупка скина
     {
         if (!acceptPanel.activeSelf)
         {
@@ -84,7 +84,7 @@ public class Shop : MonoBehaviour
             }
         }
     }
-    private void Equip(int index)
+    private void Equip(int index) // одеть/снять скин
     {
         if (equipedIndex != index)
         {
@@ -98,7 +98,7 @@ public class Shop : MonoBehaviour
         }
         Preferences.EquipedSkin = equipedIndex;
     }
-    private void SetListener(Skin skin)
+    private void SetListener(Skin skin) // установить листенер на кнопку в зависимости от скина
     {
         skinBuyButton.onClick.RemoveAllListeners();
         if (!skin.isPurchased)
@@ -120,7 +120,7 @@ public class Shop : MonoBehaviour
             });
         }
     }
-    public void ChooseTab(int tab)
+    public void ChooseTab(int tab) // переключение вкладок
     {
         var choosedIndex = tab;
         var isChoosedIndexEqualsOne = choosedIndex == 1;
@@ -135,7 +135,7 @@ public class Shop : MonoBehaviour
         else
             moneyView.text = money.ToString();
     }
-    public void Move(int value)
+    public void Move(int value) // смена скина
     {
         if (!acceptPanel.activeSelf)
         {
@@ -147,11 +147,11 @@ public class Shop : MonoBehaviour
             SetListener(skin);
         }
     }
-    public void CloseAccept()
+    public void CloseAccept() // закрыть диалог подтверждения
     {
         acceptPanel.SetActive(false);
     }
-    public void CloseShop()
+    public void CloseShop() // закрыть магазин
     {
         if (!acceptPanel.activeSelf)
         {
@@ -160,7 +160,7 @@ public class Shop : MonoBehaviour
                 skinViewAnimator.Play("CloseSkinView");
         }
     }
-    public void BuyMoney(int money)
+    public void BuyMoney(int money) // купить монеты, заготовка для доната в игре
     {
         this.money += money;
         secondMoneyView.text = this.money.ToString();

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class Localization : MonoBehaviour
+public class Localization : MonoBehaviour // локализация статичного текста
 {
     [Header("Translated text identificator")]
     [Tooltip("New record = 0\nPause = 1\nResume = 2\nGame Over = 3\nQuit = 4\nRestart = 5" +
@@ -10,11 +10,11 @@ public class Localization : MonoBehaviour
         "\nAccept question = 6\nYes = 7\nNo = 8\nEquip = 9\nRemove = 10\nSettings = 11" +
         "\nLanguage word = 12\nRU = 13\nEN = 14\nQuit question = 15\nRestart question = 16" +
         "\nTime = 17\nScore = 18\nShop = 19\nLoading = 20\nFPSEnabled = 21\nClear data = 22\nRequestClearData = 23")]
-    [SerializeField] private int id = -1;
-    private TextMeshProUGUI shared;
-    private bool isGame;
-    private LocalizeManager.ChangeLanguageDelegate changeLanguageDelegate;
-    private void Start()
+    [SerializeField] private int id = -1; // id перевода
+    private TextMeshProUGUI shared; // текст
+    private bool isGame; // в игре ли находится текст
+    private LocalizeManager.ChangeLanguageDelegate changeLanguageDelegate; // оповещение смены языка
+    private void Start() // инициализация смены языка
     {
         isGame = SceneManager.GetActiveScene().buildIndex == 1;
         shared = GetComponent<TextMeshProUGUI>();
@@ -31,7 +31,7 @@ public class Localization : MonoBehaviour
         else if (LocalizeManager.CurrentLanguage == Language.Russian)
             shared.text = LocalizeManager.GetLocalizedString(id, isGame);
     }
-    private void OnDestroy()
+    private void OnDestroy() // удаление оповещений из списка
     {
         if (!isGame && !LocalizeManager.IsChangeListenersListClear)
         {

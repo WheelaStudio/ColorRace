@@ -1,15 +1,15 @@
 using System.Collections;
 using UnityEngine;
-public class BackGroundColorAnimation : MonoBehaviour
+public class BackGroundColorAnimation : MonoBehaviour // изменение цвета на заднем фоне во время игры
 {
-    private Camera cameraMain;
-    private float colorH = 0f;
+    private Camera cameraMain; // кэширование камеры
+    private float colorH = 0f; //  hue - цветовой тон фона
     private void Start()
     {
-        cameraMain = GetComponent<Camera>();
-        StartCoroutine(ColorChange());
+        cameraMain = GetComponent<Camera>(); // получение ссылки на камеру
+        StartCoroutine(ColorChange()); // запуск корутины
     }
-    private IEnumerator ColorChange()
+    private IEnumerator ColorChange() // изменение цвета с небольшой задержкой
     {
         var delay = new WaitForSeconds(0.1f);
         while (true)

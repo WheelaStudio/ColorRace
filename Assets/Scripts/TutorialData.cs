@@ -1,26 +1,26 @@
 using System;
-public enum GameTutorialType
+public enum GameTutorialType // тип игрового туториала
 {
     Description, Control
 }
 [Serializable]
-public class TutorialData
+public class TutorialData // описание данных туториала
 {
-    public bool GameTutorialCompleted = false;
-    public bool ShopAlertRequest = false;
-    public bool ShopAlertDisplayed = false;
-    public static TutorialData Shared { get; private set; }
-    public static void Load()
+    public bool GameTutorialCompleted = false; // завершён ли туториал об игре
+    public bool ShopAlertRequest = false; // требуется ли показ подсказки о появившейся возможности купить скин
+    public bool ShopAlertDisplayed = false; // показана ли подсказка о появившейся возможности купить скин
+    public static TutorialData Shared { get; private set; } // глобальная ссылка на скрипт
+    public static void Load() // загрузка данных
     {
         Shared = Preferences.TutorialData;
         if (Shared == null)
             Shared = new TutorialData();
     }
-    public void Save()
+    public void Save() // сохранение данных
     {
         Preferences.TutorialData = Shared;
     }
-    public string GetGameTutorialText(GameTutorialType gameTutorial)
+    public string GetGameTutorialText(GameTutorialType gameTutorial) // получить локализованый туториал
     {
         if (gameTutorial == GameTutorialType.Control)
             return LocalizeManager.CurrentLanguage == Language.Russian ? "Для перемещения налево нажимать на левую часть экрана, направо - на правую" :
@@ -29,7 +29,7 @@ public class TutorialData
             return LocalizeManager.CurrentLanguage == Language.Russian ? "Цель игры -разбивать кубики в цвет бортиков стен" :
                 "The goal of the game is to break the cubes in the color of the sides of the walls";
     }
-    public string ShopAlertText
+    public string ShopAlertText // получить локализованую подскащу
     {
         get
         {

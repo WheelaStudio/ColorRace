@@ -1,8 +1,9 @@
 using UnityEngine;
 using System;
-public static class Preferences
+public static class Preferences // класс для сохранения данных игры
 {
-    public const int SkinsCount = 5;
+    public const int SkinsCount = 5; // максимальное количество купленных скинов
+    // ключи для доступа к значениям
     private const string TutorialDataKey = "TUTORIAL_DATA_KEY";
     private const string TimeRecordKey = "TIME_RECORD_KEY";
     private const string ScoreRecordKey = "SCORE_RECORD_KEY";
@@ -11,7 +12,7 @@ public static class Preferences
     private const string EquipedSkinKey = "EQUIPEDSKIN_KEY";
     private const string PurchasedSkinsKey = "PURCHASEDSKINS_KEY";
     private const string FPSViewEnabledKey = "FPS_ENABLED_KEY";
-    public static bool FPSViewEnabled
+    public static bool FPSViewEnabled // включен ли fps view
     {
         get
         {
@@ -23,7 +24,7 @@ public static class Preferences
             PlayerPrefs.Save();
         }
     }
-    public static TutorialData TutorialData
+    public static TutorialData TutorialData // информация о туториале
     {
         get
         {
@@ -35,7 +36,7 @@ public static class Preferences
             PlayerPrefs.Save();
         }
     }
-    public static bool[] PurchasedSkins
+    public static bool[] PurchasedSkins // купленные скины
     {
         get
         {
@@ -62,19 +63,19 @@ public static class Preferences
             PlayerPrefs.Save();
         }
     }
-    public static int Money
+    public static int Money // деньги
     {
         get
         {
             return PlayerPrefs.GetInt(MoneyKey);
         }
     }
-    public static void SetMoney(int value, bool increase = false)
+    public static void SetMoney(int value, bool increase = false) // установить количество денег
     {
         PlayerPrefs.SetInt(MoneyKey, increase ? Money + value : value);
         PlayerPrefs.Save();
     }
-    public static int EquipedSkin
+    public static int EquipedSkin // одетый скин
     {
         get
         {
@@ -86,7 +87,7 @@ public static class Preferences
             PlayerPrefs.Save();
         }
     }
-    public static int TimeRecord
+    public static int TimeRecord // рекорд по времнеи 
     {
         get
         {
@@ -98,7 +99,7 @@ public static class Preferences
             PlayerPrefs.Save();
         }
     }
-    public static int ScoreRecord
+    public static int ScoreRecord // рекорд по очкам
     {
         get
         {
@@ -110,7 +111,7 @@ public static class Preferences
             PlayerPrefs.Save();
         }
     }
-    public static float Volume
+    public static float Volume // громкость звука
     {
         get
         {
@@ -122,7 +123,7 @@ public static class Preferences
             PlayerPrefs.Save();
         }
     }
-    public static void ClearData()
+    public static void ClearData() // сброс всех настроек
     {
         PlayerPrefs.DeleteAll();
     }

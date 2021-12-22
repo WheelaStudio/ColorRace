@@ -2,51 +2,51 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-public class BallController : MonoBehaviour
+public class BallController : MonoBehaviour // контроль шарика
 {
-    private readonly Color white = new Color(1f, 1f, 1f, 1f);
-    private readonly Color effectColor = new Color(1f, 1f, 1f, 0.25f);
-    private bool isInEffect = false;
-    public static BallController Singleton { get; private set; }
-    private Collider mainCollider;
-    private int timeForEffect;
-    [SerializeField] private GameObject effectTimeViewGameObject, LeftMovePanel, RightMovePanel;
-    [SerializeField] private TextMeshProUGUI effectTimeView;
-    [SerializeField] private Texture[] skins = new Texture[2];
-    private Material LeftWall, RightWall;
-    [SerializeField] private AudioSource DestroyCubeSound;
-    [SerializeField] private MeshRenderer LeftWallRdr, RightWallRdr;
-    [SerializeField] private ParticleSystem SnowSystem;
-    private MeshRenderer mainMeshRenderer;
-    private Rigidbody body;
-    private Transform currentTransform;
-    private ValueManager valueManager;
-    private CubeSpawner cubeSpawner;
-    private int posIndex = 0;
-    private bool isMoving = false;
-    private Game game;
-    private bool snowSystemEnabled = false;
-    private Dictionary<int, float[]> raceXPos = new Dictionary<int, float[]>()
+    private readonly Color white = new Color(1f, 1f, 1f, 1f); // белый цвет
+    private readonly Color effectColor = new Color(1f, 1f, 1f, 0.25f); // цвет во время эффекта
+    private bool isInEffect = false; // находится ли шарик в состоянии эффекта
+    public static BallController Singleton { get; private set; } // глобальная ссылка на скрипт
+    private Collider mainCollider; // коллайдер шарика
+    private int timeForEffect; // время, в течение которого эффект недоступен
+    [SerializeField] private GameObject effectTimeViewGameObject, LeftMovePanel, RightMovePanel; // представление отсчёта времени, панель для движения влево, вправо
+    [SerializeField] private TextMeshProUGUI effectTimeView; // текст отсчёта времени до "доступности" эффекта
+    [SerializeField] private Texture[] skins; // скины
+    private Material LeftWall, RightWall; // материалы левой, правой стены
+    [SerializeField] private AudioSource DestroyCubeSound; // звук уничтожения кубика
+    [SerializeField] private MeshRenderer LeftWallRdr, RightWallRdr; // рендеры левой, правой стены
+    [SerializeField] private ParticleSystem SnowSystem; // система частиц
+    private MeshRenderer mainMeshRenderer; // рендер шарика
+    private Rigidbody body; // ригидбоди шарика
+    private Transform currentTransform; // трансформ шарика
+    private ValueManager valueManager; // ссылка на valueManage
+    private CubeSpawner cubeSpawner; // ссылка на спавнер кубиков
+    private int posIndex = 0; // индекс на позицию шарика
+    private bool isMoving = false; // двигается ли в сторону шарика
+    private Game game; // ссылка на Game
+    private bool snowSystemEnabled = false; // работает ли система партиклей
+    private Dictionary<int, float[]> raceXPos = new Dictionary<int, float[]>() // словарь, в котором описаны возможные позиции по x в зависимости от кол-ва кубиков
     {
         [2] = new float[] { 0.5f, -0.5f },
         [3] = new float[] { 0.6f, 0f, -0.6f },
         [4] = new float[] { 0.67f, 0.25f, -0.25f, -0.67f }
     };
-    public bool IsInEffect
+    public bool IsInEffect // свойство, возвращающее isInEffect 
     {
         get
         {
             return isInEffect;
         }
     }
-    public bool IsTimeTextActive
+    public bool IsTimeTextActive // свойство, возврающее значение, указывающее, включен или выключен текст отсчёта
     {
         get
         {
             return effectTimeViewGameObject.activeSelf;
         }
     }
-    private bool CanMove
+    private bool CanMove // свойство, показывающее, может ли шарик двигаться в сторону
     {
         get
         {
@@ -62,11 +62,11 @@ public class BallController : MonoBehaviour
             return leftTag != "Cube" && rightTag != "Cube";
         }
     }
-    private void Awake()
+    private void Awake() // инициализация ссылки на скрипт
     {
         Singleton = this;
     }
-    private IEnumerator Start()
+    private IEnumerator Start() // инициализация остальных значений, ожидание окончания туториала
     {
         var skinIndex = Preferences.EquipedSkin;
         mainMeshRenderer = GetComponent<MeshRenderer>();
@@ -105,7 +105,7 @@ public class BallController : MonoBehaviour
         DisplayTargetColor();
         StartCoroutine(TimeEstimated());
     }
-    private IEnumerator TimeEstimated()
+    private IEnumerator TimeEstimated() // корутина, отсчитывающая время до "доступности" эффекта
     {
         var delay = new WaitForSeconds(1f);
         for (timeForEffect = 30; timeForEffect > 0; timeForEffect--)
@@ -115,7 +115,7 @@ public class BallController : MonoBehaviour
         }
         effectTimeView.text = LocalizeManager.GetLocalizedString(LocalizeManager.TapHereToGoThroughAnyCube, true);
     }
-    private void Move(float x, bool changePosIndex = true)
+    private void Move(float x, bool changePosIndex = true) // передвижение шарика
     {
         var currentXPos = raceXPos[valueManager.GetCubeCount(false)];
         if (changePosIndex)
@@ -137,11 +137,11 @@ public class BallController : MonoBehaviour
             StopCoroutine(Moving());
         StartCoroutine(Moving());
     }
-    public void SetTimeTextActive(bool active)
+    public void SetTimeTextActive(bool active) // включение/выключение текста отсчёта
     {
         effectTimeViewGameObject.SetActive(active);
     }
-    public void StartInvisibleAndTriigerEffect()
+    public void StartInvisibleAndTriigerEffect() // запуск эффекта
     {
         if (timeForEffect == 0 && game.State == GameState.Running)
         {
@@ -151,7 +151,7 @@ public class BallController : MonoBehaviour
             mainCollider.isTrigger = true;
         }
     }
-    private void DisplayTargetColor()
+    private void DisplayTargetColor() // отображение цвета, кубик в цвете которого нужно сбить
     {
         var color = valueManager.TargetColor;
         LeftWall.color = color;
@@ -159,24 +159,24 @@ public class BallController : MonoBehaviour
         if (snowSystemEnabled)
             SnowSystem.startColor = color;
     }
-    private void FixedUpdate()
+    private void FixedUpdate() // вращение вокруг своей оси
     {
         currentTransform.Rotate(50f * valueManager.GetCubeSpeed(false) * Vector3.left);
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) // отслеживание столкновения с кубиком во время эффекта
     {
         if (other.gameObject.CompareTag("Cube"))
         {
             SpawnCubes();
         }
     }
-    private void SpawnCubes()
+    private void SpawnCubes() // спавн кубиков
     {
         cubeSpawner.UpdateColor();
         DisplayTargetColor();
         cubeSpawner.Spawn();
     }
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other) // окончание эффекта
     {
         if (other.gameObject.CompareTag("Cube"))
         {
@@ -187,7 +187,7 @@ public class BallController : MonoBehaviour
             StartCoroutine(TimeEstimated());
         }
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision) // отслеживание столкновения в обычном режиме, завершение игры
     {
         var gameObject = collision.gameObject;
         var name = gameObject.name;
@@ -215,7 +215,7 @@ public class BallController : MonoBehaviour
             StartInvisibleAndTriigerEffect();
     }
 #endif
-    public void StartMove(float XDirection)
+    public void StartMove(float XDirection) // начало движения объекта
     {
         if (game.State == GameState.Running && CanMove)
             Move(Mathf.Clamp(XDirection, -1f, 1f));

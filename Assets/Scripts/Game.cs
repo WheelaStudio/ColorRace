@@ -2,27 +2,28 @@ using TMPro;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
-public enum GameState
+public enum GameState // перечисление состояний игры
 {
     Running, Paused, Losed
 }
-public class Game : MonoBehaviour
+public class Game : MonoBehaviour // главный класс игры
 {
-    public static Game Singleton { get; private set; }
-    private BallController ballController;
-    private TutorialManager tutorialManager;
-    [SerializeField] private Animator pausePanel;
-    [SerializeField] private QuestionDialog questionDialog;
-    [SerializeField] private GameObject LosePanel, PausePanel, PauseButton, RecordMark, FPSText;
-    [SerializeField] private TextMeshProUGUI timeText, scoreGameText, scoreGameOverText, moneyEarnedText;
-    private int destroyedCubesCount = 0;
-    private float time = 0f;
-    public GameState State { get; private set; } = GameState.Running;
-    private void Awake()
+    public static Game Singleton { get; private set; } // глобальная ссылка на скрипт
+    private BallController ballController; // ссылка на шарик
+    private TutorialManager tutorialManager; // ссылка на туториал
+    [SerializeField] private Animator pausePanel; // аниматор панели паузы
+    [SerializeField] private QuestionDialog questionDialog; // диалог подтверждения
+    [SerializeField] private GameObject LosePanel, PausePanel, PauseButton, RecordMark, FPSText; // панель проигрыша, паузы, кнопка паузы, уведомления о рекорде, отображение fps
+    [SerializeField] private TextMeshProUGUI timeText, scoreGameText, scoreGameOverText, moneyEarnedText; /* текста, отображающие время, в течение которого игрок 
+ продержался, набранные очки в игре, при проигрыше, количество заработанных денег */
+    private int destroyedCubesCount = 0; // количество уничтоженных кубиков
+    private float time = 0f; // время, в течение которого игрок продержался
+    public GameState State { get; private set; } = GameState.Running; // текущее состояние
+    private void Awake() // инициализация глобальной ссылки
     {
         Singleton = this;
     }
-    private IEnumerator Start()
+    private IEnumerator Start() // иницализация остальных полей, ожидание окончания туториала 
     {
         ballController = BallController.Singleton;
         tutorialManager = TutorialManager.shared;
@@ -31,23 +32,23 @@ public class Game : MonoBehaviour
         yield return new WaitUntil(() => tutorialManager.TutorialCompleted);
         PauseButton.SetActive(true);
     }
-    private void Update()
+    private void Update() // счётчик времени
     {
         if (State == GameState.Running && tutorialManager.TutorialCompleted)
             time += Time.deltaTime;
     }
-    private void OnApplicationFocus(bool focus)
+    private void OnApplicationFocus(bool focus) // пауза при потере фокуса на игре
     {
         if (!focus && State == GameState.Running && tutorialManager.TutorialCompleted)
             Pause();
     }
-    public void IncreaseDestroyedCubesCount(bool show)
+    public void IncreaseDestroyedCubesCount(bool show) // увеличение количества уничтоженных кубиков
     {
         destroyedCubesCount++;
         if (show)
             scoreGameText.text = destroyedCubesCount.ToString();
     }
-    public void Pause()
+    public void Pause() // пауза
     {
         Time.timeScale = 0f;
         if (ballController.IsTimeTextActive)
@@ -57,7 +58,7 @@ public class Game : MonoBehaviour
         pausePanel.Play("PausePanel");
         State = GameState.Paused;
     }
-    public void Resume()
+    public void Resume() // продолжение игры
     {
         Time.timeScale = 1f;
         if (!ballController.IsTimeTextActive && !ballController.IsInEffect)
@@ -66,7 +67,7 @@ public class Game : MonoBehaviour
         PausePanel.SetActive(false);
         State = GameState.Running;
     }
-    public void GameOver()
+    public void GameOver() // окончание игры
     {
         Time.timeScale = 0f;
 #if !UNITY_EDITOR && !UNITY_WEBGL
@@ -110,7 +111,7 @@ public class Game : MonoBehaviour
         }
         State = GameState.Losed;
     }
-    public void OpenQuit()
+    public void OpenQuit() // открытие диалога выхода из игры
     {
         PausePanel.SetActive(false);
         questionDialog.Show(LocalizeManager.GetLocalizedString(LocalizeManager.QuitQuestion, false), delegate
@@ -121,7 +122,7 @@ public class Game : MonoBehaviour
             questionDialog.Hide(); PausePanel.SetActive(true);
         });
     }
-    public void OpenRestart()
+    public void OpenRestart() // открытие диалога рестарта игры
     {
         PausePanel.SetActive(false);
         questionDialog.Show(LocalizeManager.GetLocalizedString(LocalizeManager.RestartQuestion, false), delegate
@@ -132,12 +133,12 @@ public class Game : MonoBehaviour
             questionDialog.Hide(); PausePanel.SetActive(true);
         });
     }
-    private void Quit()
+    private void Quit() // выход из игры
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }
-    private void Restart()
+    private void Restart() // перезапуск игры
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(1);

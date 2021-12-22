@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 [RequireComponent(typeof(TextMeshProUGUI))]
-public class FPSCounter : MonoBehaviour
+public class FPSCounter : MonoBehaviour // счётчик fps
 {
     private const float fpsMeasurePeriod = 0.5f;
     private int m_FpsAccumulator = 0;
