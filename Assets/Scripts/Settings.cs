@@ -43,7 +43,7 @@ public class Settings : MonoBehaviour // класс настроек
     public void RequestClearData() // запрос удаления всех настроек
     {
         Hide();
-        questionDialog.Show(LocalizeManager.GetLocalizedString(LocalizeManager.RequestClearData, false), delegate
+        questionDialog.Show(LocalizeManager.GetLocalizedString(Translation.RequestClearData, false), delegate
         {
             Preferences.ClearData();
 #if UNITY_IOS

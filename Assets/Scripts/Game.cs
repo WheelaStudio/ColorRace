@@ -82,8 +82,8 @@ public class Game : MonoBehaviour // главный класс игры
             var seconds = time % 60;
             return seconds < 10 ? $"0{seconds}" : seconds.ToString();
         }
-        timeText.text = $"{LocalizeManager.GetLocalizedString(LocalizeManager.Time, false)}{time / 60}:{ Seconds()}";
-        scoreGameOverText.text = $"{LocalizeManager.GetLocalizedString(LocalizeManager.Score, false)}{destroyedCubesCount}";
+        timeText.text = $"{LocalizeManager.GetLocalizedString(Translation.Time, false)}{time / 60}:{ Seconds()}";
+        scoreGameOverText.text = $"{LocalizeManager.GetLocalizedString(Translation.Score, false)}{destroyedCubesCount}";
         moneyEarnedText.text = $"+{destroyedCubesCount}";
         var oldTimeRecord = Preferences.TimeRecord;
         var oldScoreRecord = Preferences.ScoreRecord;
@@ -114,7 +114,7 @@ public class Game : MonoBehaviour // главный класс игры
     public void OpenQuit() // открытие диалога выхода из игры
     {
         PausePanel.SetActive(false);
-        questionDialog.Show(LocalizeManager.GetLocalizedString(LocalizeManager.QuitQuestion, false), delegate
+        questionDialog.Show(LocalizeManager.GetLocalizedString(Translation.QuitQuestion, false), delegate
         {
             Quit();
         }, delegate
@@ -125,7 +125,7 @@ public class Game : MonoBehaviour // главный класс игры
     public void OpenRestart() // открытие диалога рестарта игры
     {
         PausePanel.SetActive(false);
-        questionDialog.Show(LocalizeManager.GetLocalizedString(LocalizeManager.RestartQuestion, false), delegate
+        questionDialog.Show(LocalizeManager.GetLocalizedString(Translation.RestartQuestion, false), delegate
         {
             Restart();
         }, delegate

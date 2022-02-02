@@ -113,7 +113,7 @@ public class BallController : MonoBehaviour // контроль шарика
             effectTimeView.text = timeForEffect.ToString();
             yield return delay;
         }
-        effectTimeView.text = LocalizeManager.GetLocalizedString(LocalizeManager.TapHereToGoThroughAnyCube, true);
+        effectTimeView.text = LocalizeManager.GetLocalizedString(Translation.TapHereToGoThroughAnyCube, true);
     }
     private void Move(float x, bool changePosIndex = true) // передвижение шарика
     {

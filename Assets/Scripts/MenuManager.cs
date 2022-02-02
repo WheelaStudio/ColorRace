@@ -49,14 +49,14 @@ public class MenuManager : MonoBehaviour // меню игры
     }
     private void UpdateRecords() // представление рекордов
     {
-        maxScore.text = $"{LocalizeManager.GetLocalizedString(LocalizeManager.MaxScore, false)}{Preferences.ScoreRecord}";
+        maxScore.text = $"{LocalizeManager.GetLocalizedString(Translation.MaxScore, false)}{Preferences.ScoreRecord}";
         var time = Preferences.TimeRecord;
         string Seconds()
         {
             var seconds = time % 60;
             return seconds < 10 ? $"0{seconds}" : seconds.ToString();
         }
-        maxTime.text = $"{LocalizeManager.GetLocalizedString(LocalizeManager.MaxTime, false)}{time / 60}:{Seconds()}";
+        maxTime.text = $"{LocalizeManager.GetLocalizedString(Translation.MaxTime, false)}{time / 60}:{Seconds()}";
     }
     public void ChangeVolume() // включить/выключить звук
     {

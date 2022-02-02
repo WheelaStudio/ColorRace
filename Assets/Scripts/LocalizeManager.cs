@@ -5,6 +5,41 @@ public enum Language // языки
 {
     English, Russian
 }
+// id'шники переводов
+public enum Translation
+{
+    NewRecord = 0,
+    Pause = 1,
+    Resume = 2,
+    GameOver = 3,
+    Quit = 4,
+    Restart = 5,
+    TapHereToGoThroughAnyCube = 6,
+    GameTutorial = 7,
+    ControlTutorial = 8,
+    MaxTime = 0,
+    MaxScore = 1,
+    BuyFor = 2,
+    Play = 3,
+    Skins = 4,
+    Money = 5,
+    AcceptQuestion = 6,
+    Yes = 7,
+    No = 8,
+    Equip = 9,
+    Remove = 10,
+    Settings = 11,
+    LanguageWord = 12,
+    QuitQuestion = 13,
+    RestartQuestion = 14,
+    Time = 15,
+    Score = 16,
+    Shop = 17,
+    Loading = 18,
+    FPSEnabled = 19,
+    ClearData = 20,
+    RequestClearData = 21
+}
 public static class LocalizeManager // локализация игры
 {
     private const int MainWordsIndex = 0; // слова меню
@@ -15,40 +50,6 @@ public static class LocalizeManager // локализация игры
     private const string EnglishLocalizationDirectory = "Localization/English"; // директория английской локализации
     private const string EnglishLocalizationFileName = "EnglishStaticWords"; // имя английской локализации
     private const string WordsTypeSeparator = "GAMEWORDS:"; // разделитель слов на категории: меню и игра
-    // id'шники переводов
-    public const int NewRecord = 0;
-    public const int Pause = 1;
-    public const int Resume = 2;
-    public const int GameOver = 3;
-    public const int Quit = 4;
-    public const int Restart = 5;
-    public const int TapHereToGoThroughAnyCube = 6;
-    public const int GameTutorial = 7;
-    public const int ControlTutorial = 8;
-    public const int MaxTime = 0;
-    public const int MaxScore = 1;
-    public const int BuyFor = 2;
-    public const int Play = 3;
-    public const int Skins = 4;
-    public const int Money = 5;
-    public const int AcceptQuestion = 6;
-    public const int Yes = 7;
-    public const int No = 8;
-    public const int Equip = 9;
-    public const int Remove = 10;
-    public const int Settings = 11;
-    public const int LanguageWord = 12;
-    public const int RU = 13;
-    public const int EN = 14;
-    public const int QuitQuestion = 15;
-    public const int RestartQuestion = 16;
-    public const int Time = 17;
-    public const int Score = 18;
-    public const int Shop = 19;
-    public const int Loading = 20;
-    public const int FPSEnabled = 21;
-    public const int ClearData = 22;
-    public const int RequestClearData = 23;
     public delegate void ChangeLanguageDelegate(); // делегат, оповещающий о смене языка
     private static List<ChangeLanguageDelegate> OnChangeLanguages; // список делегатов
     private static string[] englishStaticWords; // список английских слов в меню
@@ -97,8 +98,9 @@ public static class LocalizeManager // локализация игры
     {
         return OnChangeLanguages.Remove(changeLanguageDelegate);
     }
-    public static string GetLocalizedString(int id, bool isGameWords) // получить доступ к локализованной строке
+    public static string GetLocalizedString(Translation traslationId, bool isGameWords) // получить доступ к локализованной строке
     {
+        int id = (int)traslationId;
         return language == Language.English ? (isGameWords ? "Tap here to go through any cube!" : englishStaticWords[id]) : (isGameWords ? (id > 6 ? russianStaticWords[id] : russianGameStaticWords[id]) : russianStaticWords[id]);
     }
     public static void ChangeLanguage(Language value) // изменение языка

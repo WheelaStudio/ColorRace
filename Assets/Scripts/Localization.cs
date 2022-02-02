@@ -10,30 +10,29 @@ public class Localization : MonoBehaviour // локализация статич
         "\nAccept question = 6\nYes = 7\nNo = 8\nEquip = 9\nRemove = 10\nSettings = 11" +
         "\nLanguage word = 12\nRU = 13\nEN = 14\nQuit question = 15\nRestart question = 16" +
         "\nTime = 17\nScore = 18\nShop = 19\nLoading = 20\nFPSEnabled = 21\nClear data = 22\nRequestClearData = 23")]
-    [SerializeField] private int id = -1; // id перевода
+    [SerializeField] private Translation id; // id перевода
     private TextMeshProUGUI shared; // текст
-    private bool isGame; // в игре ли находится текст
+    private bool isMenu; // в меню ли находится текст
     private LocalizeManager.ChangeLanguageDelegate changeLanguageDelegate; // оповещение смены языка
     private void Start() // инициализация смены языка
     {
-        isGame = SceneManager.GetActiveScene().buildIndex == 1;
+        isMenu = SceneManager.GetActiveScene().buildIndex == 0;
         shared = GetComponent<TextMeshProUGUI>();
-        if (!isGame)
+        if (isMenu)
         {
             changeLanguageDelegate = delegate
             {
-                shared.text = LocalizeManager.GetLocalizedString(id, isGame);
+                shared.text = LocalizeManager.GetLocalizedString(id, !isMenu);
             };
-            if (LocalizeManager.CurrentLanguage == Language.Russian)
-                changeLanguageDelegate.Invoke();
+            changeLanguageDelegate.Invoke();
             LocalizeManager.AddChangeListener(changeLanguageDelegate);
         }
-        else if (LocalizeManager.CurrentLanguage == Language.Russian)
-            shared.text = LocalizeManager.GetLocalizedString(id, isGame);
+        else if(LocalizeManager.CurrentLanguage == Language.Russian)
+            shared.text = LocalizeManager.GetLocalizedString(id, !isMenu);
     }
     private void OnDestroy() // удаление оповещений из списка
     {
-        if (!isGame && !LocalizeManager.IsChangeListenersListClear)
+        if (isMenu && !LocalizeManager.IsChangeListenersListClear)
         {
             LocalizeManager.ClearChangeListeners();
         }

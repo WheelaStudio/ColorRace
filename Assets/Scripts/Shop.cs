@@ -89,12 +89,12 @@ public class Shop : MonoBehaviour // внутриигровой магазин
         if (equipedIndex != index)
         {
             equipedIndex = index;
-            buttonLabel.text = LocalizeManager.GetLocalizedString(LocalizeManager.Remove, false);
+            buttonLabel.text = LocalizeManager.GetLocalizedString(Translation.Remove, false);
         }
         else
         {
             equipedIndex = -1;
-            buttonLabel.text = LocalizeManager.GetLocalizedString(LocalizeManager.Equip, false);
+            buttonLabel.text = LocalizeManager.GetLocalizedString(Translation.Equip, false);
         }
         Preferences.EquipedSkin = equipedIndex;
     }
@@ -104,7 +104,7 @@ public class Shop : MonoBehaviour // внутриигровой магазин
         if (!skin.isPurchased)
         {
             var price = skin.skinData.Price;
-            buttonLabel.text = $"{LocalizeManager.GetLocalizedString(LocalizeManager.BuyFor, false)}{price}$";
+            buttonLabel.text = $"{LocalizeManager.GetLocalizedString(Translation.BuyFor, false)}{price}$";
             skinBuyButton.onClick.AddListener(delegate
             {
                 Buy(price);
@@ -112,8 +112,8 @@ public class Shop : MonoBehaviour // внутриигровой магазин
         }
         else
         {
-            buttonLabel.text = equipedIndex == index ? LocalizeManager.GetLocalizedString(LocalizeManager.Remove, false) :
-                LocalizeManager.GetLocalizedString(LocalizeManager.Equip, false);
+            buttonLabel.text = equipedIndex == index ? LocalizeManager.GetLocalizedString(Translation.Remove, false) :
+                LocalizeManager.GetLocalizedString(Translation.Equip, false);
             skinBuyButton.onClick.AddListener(delegate
             {
                 Equip(index);
