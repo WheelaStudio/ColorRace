@@ -9,7 +9,7 @@ public class Shop : MonoBehaviour // внутриигровой магазин
     [SerializeField] private GameObject[] tabs = new GameObject[2]; // вкладки в магазине
     [SerializeField] private Image[] tabButtons = new Image[2]; // изображения кнопок для переключения вкладок
     [SerializeField] private AudioSource purchaseSound; // звук приобретения скина
-    [SerializeField] private GameObject acceptPanel; // окно подтверждения покупки
+    [SerializeField] private GameObject acceptPanel, shopCanvas; // окно подтверждения покупки, канвас магазина
     [SerializeField] private Animator canvasHandler, skinViewAnimator, buyButtonAnimator; // аниматоры канваса, представления скина, кнопки покупки
     [SerializeField] private TextMeshProUGUI skinName, buttonLabel, moneyView, secondMoneyView; // текста  имени скина, кнопки покупки, монет на 1 и 2 вкладке
     [SerializeField] private MeshRenderer meshRenderer; // рендер шарика, на котором изображён скин
@@ -49,6 +49,21 @@ public class Shop : MonoBehaviour // внутриигровой магазин
             SetListener(skins[index]);
         });
     }
+#if !UNITY_IOS
+    private void Update() // нажатие на кнопку "Назад"
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (acceptPanel.activeSelf)
+            {
+                CloseAccept();
+            } else if(shopCanvas.activeSelf && shopCanvas.transform.localScale == Vector3.one)
+            {
+                CloseShop();
+            }
+        }
+    }
+#endif
     private void Buy(int price) // покупка скина
     {
         if (!acceptPanel.activeSelf)
@@ -57,7 +72,7 @@ public class Shop : MonoBehaviour // внутриигровой магазин
             var priceToBuy = price;
             if (price > money)
             {
-#if !UNITY_EDITOR && !UNITY_WEBGL
+#if !UNITY_STANDALONE && !UNITY_WEBGL
             Handheld.Vibrate();
 #endif
                 buyButtonAnimator.Play("NoMoney");

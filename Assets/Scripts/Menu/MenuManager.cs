@@ -22,14 +22,19 @@ public class MenuManager : MonoBehaviour // меню игры
     [SerializeField]
     private Sprite SoundOn, SoundOff; // спрайты "включенный/выключенный звук"
     private Settings settings; // настройки
-    private void Awake() // иницализация полей, включение туториала
+    private void Awake() // иницализация полей, включение туториала, настройка разрешения на ПК
     {
         Shared = this;
         LocalizeManager.Init();
-        if(TutorialData.Shared is null)
-        TutorialData.Load();
+        if (TutorialData.Shared is null)
+            TutorialData.Load();
         tutorialData = TutorialData.Shared;
         Application.targetFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? 60 : Screen.currentResolution.refreshRate;
+#if UNITY_STANDALONE
+        var height = Screen.currentResolution.height
+         - Screen.currentResolution.height / 8;
+        Screen.SetResolution(height / 16 * 9, height, false);
+#endif
         if (!tutorialData.GameTutorialCompleted)
             SceneManager.LoadScene(1);
     }
@@ -47,6 +52,18 @@ public class MenuManager : MonoBehaviour // меню игры
             canvasHandler.Play("ShopAlert");
         }
     }
+#if !UNITY_IOS
+    private void Update() // нажатие на кнопку "Назад"
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (SettingsPanel.activeSelf)
+                settings.Hide();
+            else if (settings.RequestPanelIsActive)
+                settings.HideRequestPanel();
+        }
+    }
+#endif
     private void UpdateRecords() // представление рекордов
     {
         maxScore.text = $"{LocalizeManager.GetLocalizedString(Translation.MaxScore, false)}{Preferences.ScoreRecord}";
@@ -87,7 +104,7 @@ public class MenuManager : MonoBehaviour // меню игры
                 tutorialData.ShopAlertRequest = false;
                 tutorialData.ShopAlertDisplayed = true;
                 tutorialData.Save();
-                    shopAlert.SetActive(false);
+                shopAlert.SetActive(false);
             }
             canvasHandler.Play("OpenShop");
             if (skinViewHolder.activeSelf)

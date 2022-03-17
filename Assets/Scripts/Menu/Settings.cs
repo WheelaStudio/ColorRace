@@ -40,22 +40,26 @@ public class Settings : MonoBehaviour // класс настроек
     {
         gameObject.SetActive(false);
     }
+    public void HideRequestPanel() // закрытие диалога
+    {
+        questionDialog.Hide();
+        gameObject.SetActive(true);
+    }
     public void RequestClearData() // запрос удаления всех настроек
     {
         Hide();
         questionDialog.Show(LocalizeManager.GetLocalizedString(Translation.RequestClearData, false), delegate
         {
             Preferences.ClearData();
-#if UNITY_IOS
-            Application.Quit();
+#if UNITY_ANDROID
+             AndroidJavaObject activity = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
+            activity.Call("finish");
 #else
-AndroidJavaObject activity = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
-activity.Call("finish");
+            Application.Quit();
 #endif
         }, delegate
         {
-            questionDialog.Hide();
-            gameObject.SetActive(true);
+            HideRequestPanel();
         });
     }
 }

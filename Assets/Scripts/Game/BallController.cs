@@ -19,13 +19,16 @@ public class BallController : MonoBehaviour // контроль шарика
     [SerializeField] private ParticleSystem SnowSystem; // система частиц
     private MeshRenderer mainMeshRenderer; // рендер шарика
     private Rigidbody body; // ригидбоди шарика
+#if UNITY_STANDALONE
+    private bool controlIsEnabled = false;
+#endif
     private Transform currentTransform; // трансформ шарика
     private ValueManager valueManager; // ссылка на valueManage
     private CubeSpawner cubeSpawner; // ссылка на спавнер кубиков
     private int posIndex = 0; // индекс на позицию шарика
-    private bool isMoving = false; // двигается ли в сторону шарика
+    private bool isMoving = false; // двигается ли в сторону шарик
     private Game game; // ссылка на Game
-    private bool snowSystemEnabled = false; // работает ли система партиклей
+    private bool snowSystemIsEnabled = false; // работает ли система партиклей
     private Dictionary<int, float[]> raceXPos = new Dictionary<int, float[]>() // словарь, в котором описаны возможные позиции по x в зависимости от кол-ва кубиков
     {
         [2] = new float[] { 0.5f, -0.5f },
@@ -92,13 +95,16 @@ public class BallController : MonoBehaviour // контроль шарика
             StartCoroutine(localMove());
             if (valueManager.GetCubeCount(false) == CubeSpawner.MaxCubeCount)
             {
-                snowSystemEnabled = true;
+                snowSystemIsEnabled = true;
                 SnowSystem.Play();
             }
         };
         var tutorialManager = TutorialManager.shared;
         if (!tutorialManager.TutorialCompleted)
             yield return new WaitUntil(() => tutorialManager.TutorialCompleted);
+#if UNITY_STANDALONE
+        controlIsEnabled = true;
+#endif
         LeftMovePanel.SetActive(true);
         RightMovePanel.SetActive(true);
         effectTimeView.gameObject.SetActive(true);
@@ -156,7 +162,7 @@ public class BallController : MonoBehaviour // контроль шарика
         var color = valueManager.TargetColor;
         LeftWall.color = color;
         RightWall.color = color;
-        if (snowSystemEnabled)
+        if (snowSystemIsEnabled)
             SnowSystem.startColor = color;
     }
     private void FixedUpdate() // вращение вокруг своей оси
@@ -208,11 +214,12 @@ public class BallController : MonoBehaviour // контроль шарика
 
 
     }
-#if UNITY_EDITOR
-    private void Update()
+#if UNITY_STANDALONE
+    private void Update() // управление на ПК
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            StartInvisibleAndTriigerEffect();
+        var axis = Input.GetAxis("Horizontal");
+        if (axis != 0f && !isMoving && controlIsEnabled)
+            StartMove(axis);
     }
 #endif
     public void StartMove(float XDirection) // начало движения объекта

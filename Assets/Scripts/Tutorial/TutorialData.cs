@@ -23,10 +23,15 @@ public class TutorialData // описание данных туториала
     public string GetGameTutorialText(GameTutorialType gameTutorial) // получить локализованый туториал
     {
         if (gameTutorial == GameTutorialType.Control)
-            return LocalizeManager.CurrentLanguage == Language.Russian ? "Для перемещения налево нажимать на левую часть экрана, направо - на правую" :
+#if UNITY_STANDALONE
+            return LocalizeManager.CurrentLanguage == Language.Russian ? "Для перемещения налево нажмите на левую стрелку(A) или часть экрана, направо - на правую(D)" :
+                "To move to the left, press the left arrow (A) or part of the screen, to the right - to the right(D)";
+#else
+        return LocalizeManager.CurrentLanguage == Language.Russian ? "Для перемещения налево нажмите на левую часть экрана, направо - на правую" :
                 "To move to the left, click on the left side of the screen, to the right - on the right";
+#endif
         else
-            return LocalizeManager.CurrentLanguage == Language.Russian ? "Цель игры -разбивать кубики в цвет бортиков стен" :
+            return LocalizeManager.CurrentLanguage == Language.Russian ? "Цель игры - разбивать кубики в цвет бортиков стен" :
                 "The goal of the game is to break the cubes in the color of the sides of the walls";
     }
     public string ShopAlertText // получить локализованую подскащу

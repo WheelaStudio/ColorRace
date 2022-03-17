@@ -32,10 +32,27 @@ public class Game : MonoBehaviour // главный класс игры
         yield return new WaitUntil(() => tutorialManager.TutorialCompleted);
         PauseButton.SetActive(true);
     }
-    private void Update() // счётчик времени
+    private void Update() // счётчик времени, нажатие на кнопку "Назад"
     {
         if (State == GameState.Running && tutorialManager.TutorialCompleted)
             time += Time.deltaTime;
+#if !UNITY_IOS
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(State == GameState.Running)
+            {
+                Pause();
+            }
+            else if (PausePanel.activeSelf && PausePanel.transform.localScale == Vector3.one)
+            {
+                OpenQuit();
+            }
+            else if (questionDialog.gameObject.activeSelf)
+            {
+                HideQuestionDialog();
+            }
+        }
+#endif
     }
     private void OnApplicationFocus(bool focus) // пауза при потере фокуса на игре
     {
@@ -70,7 +87,7 @@ public class Game : MonoBehaviour // главный класс игры
     public void GameOver() // окончание игры
     {
         Time.timeScale = 0f;
-#if !UNITY_EDITOR && !UNITY_WEBGL
+#if !UNITY_STANDALONE && !UNITY_WEBGL
         Handheld.Vibrate();
 #endif
         PauseButton.SetActive(false);
@@ -111,6 +128,11 @@ public class Game : MonoBehaviour // главный класс игры
         }
         State = GameState.Losed;
     }
+    private void HideQuestionDialog()
+    {
+        questionDialog.Hide();
+        PausePanel.SetActive(true);
+    }
     public void OpenQuit() // открытие диалога выхода из игры
     {
         PausePanel.SetActive(false);
@@ -119,7 +141,7 @@ public class Game : MonoBehaviour // главный класс игры
             Quit();
         }, delegate
         {
-            questionDialog.Hide(); PausePanel.SetActive(true);
+            HideQuestionDialog();
         });
     }
     public void OpenRestart() // открытие диалога рестарта игры
@@ -130,7 +152,7 @@ public class Game : MonoBehaviour // главный класс игры
             Restart();
         }, delegate
         {
-            questionDialog.Hide(); PausePanel.SetActive(true);
+            HideQuestionDialog();
         });
     }
     private void Quit() // выход из игры

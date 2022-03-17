@@ -33,7 +33,7 @@ public class TutorialManager : MonoBehaviour // менеджер для пока
         tutorailData.Save();
         Destroy(gameObject);
     }
-
+#if !UNITY_STANDALONE
     private void Update() // удержание игры пальцем
     {
         if (Input.touchCount > 0 && Time.timeScale == 1f)
@@ -43,4 +43,5 @@ public class TutorialManager : MonoBehaviour // менеджер для пока
         else if (Time.timeScale == 0f && Input.touchCount == 0f)
             Time.timeScale = 1f;
     }
+#endif
 }
