@@ -11,6 +11,9 @@ public class Game : MonoBehaviour // главный класс игры
     public static Game Singleton { get; private set; } // глобальная ссылка на скрипт
     private BallController ballController; // ссылка на шарик
     private TutorialManager tutorialManager; // ссылка на туториал
+#if !UNITY_IOS
+    private bool backButtonIsEnabled = false; // включена ли кнопка "Назад"
+#endif
     [SerializeField] private Animator pausePanel; // аниматор панели паузы
     [SerializeField] private QuestionDialog questionDialog; // диалог подтверждения
     [SerializeField] private GameObject LosePanel, PausePanel, PauseButton, RecordMark, FPSText; // панель проигрыша, паузы, кнопка паузы, уведомления о рекорде, отображение fps
@@ -30,6 +33,9 @@ public class Game : MonoBehaviour // главный класс игры
         if (Preferences.FPSViewEnabled)
             FPSText.SetActive(true);
         yield return new WaitUntil(() => tutorialManager.TutorialCompleted);
+#if !UNITY_IOS
+        backButtonIsEnabled = true;
+#endif
         PauseButton.SetActive(true);
     }
     private void Update() // счётчик времени, нажатие на кнопку "Назад"
@@ -37,7 +43,7 @@ public class Game : MonoBehaviour // главный класс игры
         if (State == GameState.Running && tutorialManager.TutorialCompleted)
             time += Time.deltaTime;
 #if !UNITY_IOS
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && backButtonIsEnabled)
         {
             if(State == GameState.Running)
             {
