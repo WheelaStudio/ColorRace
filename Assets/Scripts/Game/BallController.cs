@@ -217,8 +217,12 @@ public class BallController : MonoBehaviour // контроль шарика
 #if UNITY_STANDALONE
     private void Update() // управление на ПК
     {
-        var axis = Input.GetAxis("Horizontal");
-        if (axis != 0f && !isMoving && controlIsEnabled)
+        var axis = 0f;
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            axis = -1f;
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            axis = 1f;
+        if (axis != 0f && controlIsEnabled)
             StartMove(axis);
     }
 #endif
