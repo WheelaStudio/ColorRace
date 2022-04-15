@@ -29,7 +29,6 @@ public class MenuManager : MonoBehaviour // меню игры
         if (TutorialData.Shared is null)
             TutorialData.Load();
         tutorialData = TutorialData.Shared;
-        Application.targetFrameRate = Application.platform == RuntimePlatform.WebGLPlayer ? 60 : Screen.currentResolution.refreshRate;
 #if UNITY_STANDALONE
         var height = Screen.currentResolution.height
          - Screen.currentResolution.height / 8;
