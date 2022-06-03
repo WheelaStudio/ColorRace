@@ -1,5 +1,5 @@
 # Color Race
-This is a basic 3D Unity game in which the player must use a ball to destroy a cube of the same color as the walls
+This is a basic 3D Unity game in which the player must use a ball to destroy a cube of the same color as the walls\
 \
 The game is designed for mobile devices (Android & IOS) and PC (Windows, Mac & Linux)\
 \
